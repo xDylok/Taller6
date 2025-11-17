@@ -42,6 +42,6 @@ public final class InsertionSort {
             }
         }
         // muestra el arreglo ordenado
-        System.out.println(SortingUtils.mostrarArregloFinal(arreglo));
+        System.out.print(SortingUtils.mostrarArregloFinal(arreglo));
     }
 }
