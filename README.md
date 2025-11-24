@@ -1,9 +1,9 @@
-# Taller - Ordenación	básica	en	Java:	Burbuja, Selección e Inserción - Estructura de Datos
+# Taller 6 - Comparacion de Ordenacion
 
 ---
 
-Implementar y comparar tres algoritmos de ordenación in-place sobre arreglos pequeños, y validar su funcionamiento con 
-trazas y casos de prueba reproducibles.
+Ejecutar y analizar comparativamente los algoritmos de Burbuja, Selección e Inserción sobre casos de prueba, 
+para determinar cuándo conviene cada uno en función de tamaño, grado de orden y duplicados.
 
 
 **Autores:**
@@ -15,44 +15,39 @@ trazas y casos de prueba reproducibles.
 
 1. Clonar el repositorio.
 2. Abrir el proyecto en un IDE.
-3. Ejecutar el archivo **SortingDemo.java**, dentro de este se encuentra el metodo *'main'*.
-4. Aparecera un menu en la consola.
-5. Seleccionar las opciones del 1 al 3 para ejecutar las pruebas de un algoritmo en específico,
-6. Opcion 4 para salir.
+3. **Verificar los DataSets:** En la carpeta `src/ed/u2/CSV/` se debe encontrar los archivos `.csv` generados.
+4. **Ejecutar:**
+   * **Ubicar la clase principal:** `src/ed/u2/sorting/SortingExperiment.java`.
+   * Ejecutar el metodo `main`.
+   * La consola mostrara una tabla con los resultados.
 
 ---
 ## Desiciones de diseño:
 
-* **Estructura del paquete:** Todo el codigo se encuentra en el paquete: `ed.u2.sorting`.
-* **Clase `SortingUtils`:** Clase de utilidades la cual se encarga de:
-    * Administrar los colores de la consola.
-    * Gestionar los **dataSets de prueba**, entregando una copia `Arrays.copyOf()` cada vez que se solicita para evitar 
-      modificar los datos.
-    * Contiene un "interruptor" global `HABILITAR_TRAZAS` para activar/desacticar las trazas del proyecto.
-    * Metodo que formatea la salida.
-* **Firmas y Sobrecarga:** Todos los algoritmos implementan dos firmas `sort()`.
-    1. `sort(int[] arreglo)`: Firma estandar que llama a la version con trazas apagadas.
-    2. `sort(int[] arreglo, boolean trace)`: Firma que contiene la logica de ordenacion e impreciones de traza.
-* **Requsitos Especificos:** 
-    * **`SelectionSort`:** Implementa contador `contSwaps` que se incrementa si `min != i`.
-    * **`BubbleSort`:** Implementa unna bandera `boolean swapped` en cada pasada para permitir un corte temprano en caso
-    * de que el array ya este ordenado.
----
-## Casos de prueba;
-Se probaron los datasets requeridos mas los casos bordes solicitados, en donde se determino que los peores casos para 
-*Insercion y Burbuja* son los arreglos en orden inverso `DataSet B` y el `DataSet C` fue necesario para probar el 
-**Corte temprano** del algoritmo de Burbuja y con los ultimos arreglos `Dataser J` y `Dataser K` se comparan el 
-rendimiento de *Insercion* el cual es rapido, a comparacion de *Seleccion* el cual es lento.
+* **Genericos (`<T extends Comparable<T>>`):** Los algoritmos fueron refactorizados para ordenar cualquier tipo de 
+objeto (no solo enteros), lo que permite el uso de modelos como `Cita`, `Paciente` e `Item`.
+* **Aislamiento de I/O:** La lectura de los archivos CSV (`ArchivosCSV.java`) se realiza *antes* de iniciar el 
+cronometro. Se pasan copias (`Arrays.copyOf`) a los algoritmos para evitar ordenar datos ya ordenados.
+* **Instrumentacion sin Trazas:** Se creo la clase `SortContadores` (DTO) para retornar `tiempo`, `comparaciones` 
+y `swaps` sin imprimir en consola durante la ejecucion, evitando fallos en la medicion del tiempo.
+* **Metodologia Robusta:** Cada prueba se ejecuta **10 veces ($R=10$)**. Se descartan las 3 primeras ejecuciones 
+(warm-up de la JVM) y se reporta la **mediana** de las 7 restantes.
+* **Generacion de Datos:** Se incluye el script de Python (`scripts/ArchivosCSV.py`) utilizado para generar los 
+datasets con semilla fija (42).
 
-### DataSets:
-* **DataSet A:** Array desordenado estandar.
-* **DataSet B:** Array en orden inverso.
-* **DataSet C:** Array ya ordenado.
-* **DataSet D:** Array con todos los elementos duplicados.
-* **DataSet E:** Array desordenado estandar.
-* **DataSet F:** Array vacio (`[]`).
-* **DataSet G:** Array con un solo elemento (`[2]`).
-* **DataSet H:** Array con numeros negativos.
-* **DataSet I:** Array con negativos, cero y positivos.
-* **DataSet J:** Array con un elemento mal al final.
-* **DataSet K:** Array con un elemento mal al inicio.
+---
+## Resultados;
+| Algoritmo | Dataset (Tipo) | N | Comparaciones | Swaps | Tiempo (ns) |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **BubbleSort** | Citas_100 (Aleatorio) | 100 | 4,922 | 2,148 | 257,800 |
+| **SelectionSort** | Citas_100 (Aleatorio) | 100 | 4,950 | 94 | 167,700 |
+| **InsertionSort** | Citas_100 (Aleatorio) | 100 | 2,245 | 2,148 | 93,400 |
+| **BubbleSort** | Citas_CasiOrd (Casi Ord) | 100 | 4,170 | 243 | 64,900 |
+| **SelectionSort** | Citas_CasiOrd (Casi Ord) | 100 | 4,950 | 5 | 56,300 |
+| **InsertionSort** | Citas_CasiOrd (Casi Ord) | 100 | **342** | 243 | **17,900** |
+| **BubbleSort** | Pacientes_500 (Duplicados) | 500 | 124,579 | 60,337 | 2,223,100 |
+| **SelectionSort** | Pacientes_500 (Duplicados) | 500 | 124,750 | **490** | 1,081,500 |
+| **InsertionSort** | Pacientes_500 (Duplicados) | 500 | 60,829 | 60,337 | 660,700 |
+| **BubbleSort** | Inventario_Inv (Inverso) | 500 | 124,750 | 124,750 | 743,900 |
+| **SelectionSort** | Inventario_Inv (Inverso) | 500 | 124,750 | 250 | 510,400 |
+| **InsertionSort** | Inventario_Inv (Inverso) | 500 | 124,750 | 124,750 | 5,433,800 |
