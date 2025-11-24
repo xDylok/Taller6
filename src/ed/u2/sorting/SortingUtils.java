@@ -5,7 +5,7 @@ import java.util.Arrays;
 public class SortingUtils {
 
     // HABILITAR TRAZAS EN 3 CLASES:
-    public static final boolean HABILITAR_TRAZAS = true;
+    public static final boolean HABILITAR_TRAZAS = false;
 
     // Colores en consola
     public static final String C_RESET = "\u001B[0m";
@@ -14,6 +14,26 @@ public class SortingUtils {
     public static final String C_AMARILLO = "\u001B[33m";
     public static final String C_AZUL = "\u001B[34m";
     public static final String C_CELESTE = "\u001B[36m";
+
+    // SIRVE PARA CALCULAR CONSTANTE DE KAPREKAR: 19/11/25
+    // convertir array a int y viceversa para constante de kaprekar
+    public static int arrayToInt(int[] array) {
+        String op = Arrays.toString(array);
+        String digitosOp = op.replaceAll("[^0-9]", "");
+        return Integer.parseInt(digitosOp);
+    }
+
+    public static int[] intToArray(int numero) {
+        String s = String.format("%04d", numero);
+        int[] array = new int[4];
+        for (int i = 0; i < 4; i++) {
+            array[i] = Character.getNumericValue(s.charAt(i));
+        }
+        return array;
+    }
+
+    // Taller 6:
+
 
     // mostrar arreglo:
     public static String mostrarArregloFinal(int[] arreglo){

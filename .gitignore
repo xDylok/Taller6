@@ -28,3 +28,7 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+/src/ed/u2/kaprekar/
+/src/NoUsado/
+/.idea/
+*.iml
